@@ -25,7 +25,6 @@ class EditReply extends Component
         $this->authorize(ReplyPolicy::UPDATE, $this->reply);
         $this->body = $data['body'];
 
-        
         $this->validate((new UpdateReplyRequest())->rules());
 
         $this->reply->update([
