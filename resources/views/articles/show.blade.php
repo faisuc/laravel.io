@@ -6,13 +6,17 @@
 
 @section('content')
     <article class="bg-white">
-        @if ($article->isDeclined() && (Auth::user()->isAdmin() || Auth::user()->isModerator()))
-            <div class="w-full text-white bg-lio-500 p-4">
-                <div class="text-center container mx-auto px-4">
+        @auth
+            @if ($article->isDeclined() && (Auth::user()->isAdmin() || Auth::user()->isModerator()))
+                <x-info-banner>
                     {{ __('admin.articles.declined') }}
-                </div>
-            </div>
-        @endif
+                </x-info-banner>
+            @elseif ($article->isPublished())
+                <x-info-banner>
+                    Your article is now published and cannot be edited anymore. If you want to perform any changes to the article, please email <a href="mailto:hello@laravel.io">hello@laravel.io</a>
+                </x-info-banner>
+            @endif
+        @endauth
 
         <div class="w-full bg-center bg-cover bg-gray-900" style="background-image: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url({{ $article->heroImage(2000, 384) }});">
             <div class="container mx-auto">
@@ -40,7 +44,7 @@
                         <div class="flex flex-wrap gap-2 lg:gap-x-4 mb-4">
                             @foreach ($tags as $tag)
                                 <a href="{{ route('articles', ['tag' => $tag->slug()]) }}">
-                                    <x-light-tag class="hover:underline">
+                                    <x-light-tag :tag="$tag" class="hover:underline">
                                         {{ $tag->name() }}
                                     </x-light-tag>
                                 </a>
